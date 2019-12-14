@@ -8,7 +8,7 @@ pipeline {
             steps {
                     deleteDir()
                     git(
-                                       url: 'git@github.com:Swenum/sa.it-academy.by.git',
+                                       url: 'git@github.com:Swenum/test.git',
                                        credentialsId: 'Github_Repo_Swenum'
 
                         )
