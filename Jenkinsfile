@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                git url: 'git@github.com:pluhin/sa.it-academy.by.git'
+                git url: 'git@github.com:Swenum/sa.it-academy.by.git'
             }
         }
         stage('Checking repository'){
