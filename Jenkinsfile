@@ -1,49 +1,45 @@
 pipeline {
     agent any
     environment {
-        NEW_BRANCH = "new_branch"
+        BUILD = "${env.BUILD_ID}"
+    }
+    parameters {
+        choice(name: 'repository_branch', choices: ['master', 'm-sa2-06-19', 'jenkins'], description: 'Pick the branch')
+        string(name: 'repository_url', defaultValue: 'https://github.com/pluhin/sa.it-academy.by.git', description: 'Github repository url')
+        booleanParam(name: 'do_clean', defaultValue: true, description: 'Do we need clean old one package?')
     }
     stages {
         stage('Clone repository') {
             steps {
-                    deleteDir()
-                    git(
-                                       url: 'git@github.com:Swenum/test.git',
-                                       credentialsId: 'Github_Repo_Swenum'
-
-                        )
+                    git branch: "${params.repository_branch}", url: "${params.repository_url}"
             }
         }
-        stage('Create branch') {
+        stage('Checking repository'){
             steps {
-                    sh """
-                        git checkout -b $NEW_BRANCH
-                        git branch
-                        git push origin $NEW_BRANCH
-                    """
+                    sh "ls -l"
             }
         }
-        stage('Delete branch') {
+        stage('Packing project') {
             steps {
-                    sh 'git checkout master && git branch -D $NEW_BRANCH'
-                    sh 'git push origin --delete $NEW_BRANCH'
+                sh '''
+                    tar -zcvf /tmp/$BUILD.tar.gz  ./
+                '''
+                deleteDir()
+                sh 'cp /tmp/$BUILD.tar.gz  ./'
             }
         }
-        stage('Test') {
+        stage('Clean old one') {
+            when {
+                expression {params.do_clean == true}
+            }
             steps {
-                    sh 'echo "Remote branches are:"'
-                    sh 'git branch -r'
-                    sh 'echo "Local branches are:"'
-                    sh 'git branch'
+                sh 'rm -f /tmp/$BUILD.tar.gz'
+            }
+        }
+        stage('Packing test') {
+            steps {
+                sh "ls -l"
             }
         }
     }
-    post {
-            success {
-                slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-            }
-            failure {
-                slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-            }
-        }
 }
