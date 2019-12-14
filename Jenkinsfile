@@ -1,43 +1,49 @@
 pipeline {
     agent any
+    environment {
+        NEW_BRANCH = "new_branch"
+    }
     stages {
         stage('Clone repository') {
             steps {
-            git(
-                   url: 'git@github.com:Swenum/sa.it-academy.by.git',
-                   credentialsId: 'Github_Repo_Swenum',
-                   branch: "master"
-                )
-
+                    deleteDir()
+                    git(
+                                       url: 'git@github.com:Swenum/sa.it-academy.by.git',
+                                       credentialsId: 'Github_Repo_Swenum',
+                                       branch: "master"
+                        )
             }
         }
-        stage('Checking repository'){
+        stage('Create branch') {
             steps {
-                sh "ls -l"
+                    sh """
+                        git checkout -b $NEW_BRANCH
+                        git branch
+                        git push origin $NEW_BRANCH
+                    """
             }
         }
-        stage('Packing project') {
+        stage('Delete branch') {
             steps {
-                sh """
-                tar -zcvf /tmp/package.tar.gz  ./
-                """
-                deleteDir()
-                sh "mv /tmp/package.tar.gz  ./"
+                    sh 'git checkout master && git branch -D $NEW_BRANCH'
+                    sh 'git push origin --delete $NEW_BRANCH'
             }
         }
-        stage('Packing test') {
-                     steps {
-                         sh "ls -l"
-                     }
-                 }
-        stage('Next step') {
-                      steps {
-                          sh "ls -la"
-                      }
-                  }
-
-
-
-
+        stage('Test') {
+            steps {
+                    sh 'echo "Remote branches are:"'
+                    sh 'git branch -r'
+                    sh 'echo "Local branches are:"'
+                    sh 'git branch'
+            }
+        }
     }
+    post {
+            success {
+                slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+            failure {
+                slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+        }
 }
