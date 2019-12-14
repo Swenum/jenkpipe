@@ -26,11 +26,18 @@ pipeline {
             }
         }
         stage('Packing test') {
-            steps {
-                sh "ls -l"
-            }
+                     steps {
+                         sh "ls -l"
+                     }
+                 }
+        stage('Next step') {
+                      steps {
+                          sh "ls -la"
+                      }
+                  }
 
-       
-        }
+
+
+
     }
 }
