@@ -9,8 +9,8 @@ pipeline {
                     deleteDir()
                     git(
                                        url: 'git@github.com:Swenum/sa.it-academy.by.git',
-                                       credentialsId: 'Github_Repo_Swenum',
-                                       branch: "master"
+                                       credentialsId: 'Github_Repo_Swenum'
+
                         )
             }
         }
