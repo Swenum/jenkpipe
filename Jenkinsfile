@@ -1,17 +1,28 @@
 pipeline {
-    agent none
+    agent any
     stages {
-        stage('Test curl') {
-            agent {
-                docker { image 'appropriate/curl' }
+        stage('Clone repository') {
+            steps {
+                git url: 'git@github.com:pluhin/sa.it-academy.by.git'
             }
+        }
+        stage('Checking repository'){
+            steps {
+                sh "ls -l"
+            }
+        }
+        stage('Packing project') {
             steps {
                 sh """
-                curl --version
-                wget -O - https://www.21vek.by | egrep "https://[0-9a-z]+[.]21vek[.]by" -o | sort -u > tmp.out
-                cat tmp.out
-                curl \$(cat tmp.out) -I | egrep HTTP
+                tar -zcvf /tmp/package.tar.gz  ./
                 """
+                deleteDir()
+                sh "mv /tmp/package.tar.gz  ./"
+            }
+        }
+        stage('Packing test') {
+            steps {
+                sh "ls -l"
             }
         }
     }
