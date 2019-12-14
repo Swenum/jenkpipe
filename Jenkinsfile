@@ -29,11 +29,8 @@ pipeline {
             steps {
                 sh "ls -l"
             }
-        stage('New Stage') {
-                        steps {
-                            sh "ls -l"
-                        }
-        }
+
+       
         }
     }
 }
