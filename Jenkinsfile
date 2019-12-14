@@ -34,5 +34,6 @@ pipeline {
                             sh "ls -l"
                         }
         }
+        }
     }
 }
