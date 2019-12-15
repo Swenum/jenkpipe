@@ -31,7 +31,8 @@ pipeline {
                                         git commit -m "Push artefact"
                                         #git  remote add  artefact git@github.com:Swenum/simplepythonapp.git
                                         #git push --set-upstream origin artefact
-                                        git push --set-upstream origin 12.simple
+                                        #git push --set-upstream origin 12.simple
+                                        docker push test-nginx swenum/nginx:latest
 
                       """
                 }
