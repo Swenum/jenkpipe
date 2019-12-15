@@ -28,7 +28,7 @@ pipeline {
                     git commit -m "Push artefact"
                     #git  remote add  artefact git@github.com:Swenum/simplepythonapp.git
                     #git push --set-upstream origin artefact
-                    git push
+                    git push --set-upstream origin 12.simple
 
                 """
             }
