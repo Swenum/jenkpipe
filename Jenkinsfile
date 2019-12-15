@@ -35,10 +35,9 @@ pipeline {
                       """
                 }
 
-
             }
         }
-
+    }
 
     post {
         success {
