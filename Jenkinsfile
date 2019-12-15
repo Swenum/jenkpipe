@@ -1,91 +1,124 @@
+import groovy.json.JsonSlurper
+
 pipeline {
     agent any
-    environment {
-        REPO = 'swenum/wordpress'
-
-    }
-         stages {
-                stage('Clone repository') {
-                    steps {
-                       script {
-                                COMMIT = "${GIT_COMMIT.substring(0,8)}"
-                       }
-                       deleteDir()
-                       git(
-                                 url: 'git@github.com:Swenum/jenkpipe',
-                                 credentialsId: 'Github_Repo_Swenum',
-                                 branch: "12.Homework"
-                        )
-                    sh 'printenv'
-                    sh 'print ${COMMIT}'
-                    }
-                }
-
-        stage ('Docker build Nginx Php-Fpm') {
-            parallel {
-                stage ('Wodpress Nginx'){
-                    agent { label 'docker'}
-                    steps {
-                        sh "docker build -f nginx/Dockerfile -t ${REPO}:${COMMIT}-nginx nginx/"
-                    }
-                    post {
-                        success {
-                            echo 'Tag for private registry'
-                            sh "docker tag ${REPO}:${COMMIT}-nginx"
-                        }
-                    }
-                }
-                stage ('Wordpress PHP-FPM') {
-                    agent { label 'docker'}
-                    steps {
-                        sh "docker build -f php7-fpm/Dockerfile -t ${REPO}:${COMMIT}-fpm php7-fpm/"
-                    }
-                    post {
-                        success {
-                            echo 'Tag for private registry'
-                            sh "docker tag ${REPO}:${COMMIT}-fpm"
-                        }
-                    }
-                }
-                stage ('Wordpress CLI') {
-                    agent { label 'docker'}
-                    steps {
-                        sh "docker build -f cli/Dockerfile -t ${REPO}:${COMMIT}-cli cli/"
-                    }
-                    post {
-                        success {
-                            echo 'Tag for private registry'
-                            sh "docker tag ${REPO}:${COMMIT}-cli"
-                        }
-                    }
-                }
-            }
-        }
-        stage ('Run'){
-            parallel {
-                stage ('Micro-Services'){
-                    agent { label 'docker'}
-                    steps {
-                        // Create Network
-                        sh "docker network create wordpress-micro-${BUILD_NUMBER}"
-                        // Start database
-                        sh "docker run -d --name 'mariadb-${BUILD_NUMBER}' -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_USER=wordpress -e MYSQL_PASSWORD=wordpress -e MYSQL_DATABASE=wordpress --network wordpress-micro-${BUILD_NUMBER} amd64/mariadb:10.0"
-                        sleep 15
-                        // Start Memcached
-                        sh "docker run -d --name 'memcached-${BUILD_NUMBER}' --network wordpress-micro-${BUILD_NUMBER} memcached"
-                        // Start application micro-services
-                        sh "docker run -d --name 'fpm-${BUILD_NUMBER}' --link mariadb-${BUILD_NUMBER}:mariadb --link memcached-${BUILD_NUMBER}:memcached --network wordpress-micro-${BUILD_NUMBER} -v wordpress-micro-data:/var/www/html ${REPO}:${COMMIT}-fpm"
-                        sh "docker run -d --name 'nginx-${BUILD_NUMBER}' --link fpm-${BUILD_NUMBER}:wordpress --link memcached-${BUILD_NUMBER}:memcached --network wordpress-micro-${BUILD_NUMBER} -v wordpress-micro-data:/var/www/html ${REPO}:${COMMIT}-nginx"
-                        // Get container IDs
-                        script {
-                            DOCKER_FPM   = sh(script: "docker ps -qa -f ancestor=${REPO}:${COMMIT}-fpm", returnStdout: true).trim()
-                            DOCKER_NGINX = sh(script: "docker ps -qa -f ancestor=${REPO}:${COMMIT}-nginx", returnStdout: true).trim()
-                        }
+    stages {
+        stage('Build Docker image') {
+            steps {
+                script {
+                    def customImage = docker.build("$env.DOCKER_IMAGE")
+                    customImage.inside {
+                        sh 'echo "Test from docker"'
                     }
                 }
             }
         }
 
+        stage('Build maven project') {
+            agent {
+                docker {
+                    image "$env.DOCKER_IMAGE"
+                    args "-v $env.PROJECT_ROOT:/home/maven/app"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Stop test container if running') {
+            steps {
+                script {
+                    sh 'docker container stop spring-echo-example-run || true'
+                }
+            }
+        }
+
+        stage('Run test container') {
+            steps {
+                script {
+                    sh """
+docker run -it -d --rm \
+    --name spring-echo-example-run \
+    -v $env.PROJECT_ROOT:/home/maven/app \
+    -p 3333:8080 \
+    --network=jenkins_default \
+    $env.DOCKER_IMAGE \
+    java -jar ./target/spring-echo-example-1.0.0.jar
+"""
+                }
+            }
+        }
+
+        stage('Sleep') {
+            steps {
+                script {
+                    sh 'sleep 30'
+                }
+            }
+        }
+
+        stage('Test curl request') {
+            steps {
+                script {
+                    url = "http://spring-echo-example-run:8080/index.html"
+                    int status = sh(script: "curl -sLI -w '%{http_code}' $url -o /dev/null", returnStdout: true)
+                    if (status != 406) {
+                        error("Returned status code = $status when calling $url")
+                    }
+                }
+            }
+        }
+
+        stage('Stop test container') {
+            steps {
+                script {
+                    sh 'docker container stop spring-echo-example-run'
+                }
+            }
+        }
+
+        stage('Create release') {
+            steps {
+                script {
+                    Date latestdate = new Date()
+                    String tag_name = latestdate.format("yyMMdd.HHmm", TimeZone.getTimeZone('UTC'))
+                    String name = "spring-echo-example-1.0.0"
+                    String body = "this is a test release"
+
+                    release_id = createRelease(tag_name, name, body).toString()
+                    env.RELEASE_ID = release_id
+                }
+            }
+        }
+
+        stage('Upload binaries') {
+            steps {
+                sh '''
+release_file="target/spring-echo-example-1.0.0.jar"
+
+curl -H "Authorization: token $GITHUB_TOKEN" \
+     -H "Accept: application/vnd.github.manifold-preview" \
+     -H "Content-Type: application/octet-stream" \
+     --data-binary @"$release_file" \
+     "https://uploads.github.com/repos/$GITHUB_USER/$GITHUB_PROJECT/releases/$RELEASE_ID/assets?name=$(basename $release_file)"
+'''
+            }
         }
     }
+}
 
+def createRelease(tag_name, name, body) {
+    def command = "{\"tag_name\":\"${tag_name}\", \"name\":\"${name}\", \"body\":\"${body}\"}"
+    echo(command)
+    response = httpRequest (consoleLogResponseBody: true,
+        httpMode: 'POST',
+        requestBody: command,
+        customHeaders: [[maskValue: false, name: "Authorization", value: "token $env.GITHUB_TOKEN"]],
+        url: "https://api.github.com/repos/$env.GITHUB_USER/$env.GITHUB_PROJECT/releases",
+        validResponseCodes: '201')
+
+    def json = new JsonSlurper().parseText(response.content)
+    return json.id
+}
