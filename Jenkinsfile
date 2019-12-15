@@ -8,14 +8,14 @@ pipeline {
                 stage('Clone repository') {
                     steps {
                             deleteDir()
-                           git(
+                            git(
                                  url: 'git@github.com:Swenum/jenkpipe',
                                  credentialsId: 'Github_Repo_Swenum',
                                  branch: "master"
-                               )
-                            script {
-                                       COMMIT = "${GIT_COMMIT.substring(0,8)}"
-                                    }
+                             )
+                           // script {
+                           //            COMMIT = "${GIT_COMMIT.substring(0,8)}"
+                           //  }
                     }
                 }
 
