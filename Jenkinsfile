@@ -1,5 +1,5 @@
 pipeline {
-    agent NodeHome
+    agent any
     environment {
         REPO = 'swenum/wordpress'
 
