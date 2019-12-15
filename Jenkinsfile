@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Create Image') {
             steps {
-                    sh "docker build -f nginx/Dockerfile -t $BUILD_TAG-nginx nginx/"
+                    sh "docker build -f nginx/Dockerfile -t test-nginx nginx/"
             }
         }
         stage('Git commit') {
