@@ -1,0 +1,120 @@
+[
+    {
+        "Id": "sha256:7bbdafbb1284a4a711ff77bb8cc7e2a9fbc16ec62ed815867462c243c3a7d7db",
+        "RepoTags": [
+            "test-nginx:latest",
+            "swenum/nginx:latest"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:26a83413f86670523ad27640361d02c77149bdd5a2c3c3cc497f0e2563eb1a4a",
+        "Comment": "",
+        "Created": "2019-12-15T13:21:50.010841991Z",
+        "Container": "258859e8ba4f6124bc26d146618f8ed958059c517ead97cc6eeb3795f9f1f1ce",
+        "ContainerConfig": {
+            "Hostname": "258859e8ba4f",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "443/tcp": {},
+                "80/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NGINX_VERSION=1.16.1",
+                "NJS_VERSION=0.3.5",
+                "PKG_RELEASE=1~buster"
+            ],
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "CMD [\"nginx\"]"
+            ],
+            "Image": "sha256:26a83413f86670523ad27640361d02c77149bdd5a2c3c3cc497f0e2563eb1a4a",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "maintainer": "Uladzimir Schuka <wetoster@gmail.com>"
+            },
+            "StopSignal": "SIGTERM"
+        },
+        "DockerVersion": "19.03.5",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "443/tcp": {},
+                "80/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NGINX_VERSION=1.16.1",
+                "NJS_VERSION=0.3.5",
+                "PKG_RELEASE=1~buster"
+            ],
+            "Cmd": [
+                "nginx"
+            ],
+            "Image": "sha256:26a83413f86670523ad27640361d02c77149bdd5a2c3c3cc497f0e2563eb1a4a",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "maintainer": "Uladzimir Schuka <wetoster@gmail.com>"
+            },
+            "StopSignal": "SIGTERM"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 191783436,
+        "VirtualSize": 191783436,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/fba9ad6d329e25db2afeecb4b2c0bb225979df8215251315b56abe587b1ecaa4/diff:/var/lib/docker/overlay2/58312ccf19c83af37f65b34d461d1fd3a411a44fa0775b047f7b11c007eeaf88/diff:/var/lib/docker/overlay2/e3188778451f6389b42a5c5668c7c3fd9a22573b9cf8bc24dd0608fb1bb887f4/diff:/var/lib/docker/overlay2/bdc66528686c40874edf22422e3974ae605fd0c7a5df8207733448e21a0e5ee7/diff:/var/lib/docker/overlay2/834c64ad838b649f58accf4cf11ff3455a1db44d4bef9591e9ac0afa1a418730/diff:/var/lib/docker/overlay2/316af4519d251a40e8f9e77f173be42ac6232d6727f018e94c050d0bf30db303/diff:/var/lib/docker/overlay2/28ca05b3958d9e1df3f7496afed667cd4c21d225267888465a38383c76d8f2e7/diff:/var/lib/docker/overlay2/95f4a77e27ad6b56a654ccf2fafd8ce52353a9b26db5bbb01a6cff7d8b545405/diff:/var/lib/docker/overlay2/1e1d94a9034232c65bb8b24fb9447d7bf27538cdc115bd5be310f9d0e56cbbdd/diff",
+                "MergedDir": "/var/lib/docker/overlay2/19ff44d0b974ca3910b4da40f632d2b8b9b226d3b059d5ad4f18673b59800c2d/merged",
+                "UpperDir": "/var/lib/docker/overlay2/19ff44d0b974ca3910b4da40f632d2b8b9b226d3b059d5ad4f18673b59800c2d/diff",
+                "WorkDir": "/var/lib/docker/overlay2/19ff44d0b974ca3910b4da40f632d2b8b9b226d3b059d5ad4f18673b59800c2d/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:831c5620387fb9efec59fc82a42b948546c6be601e3ab34a87108ecf852aa15f",
+                "sha256:ce342cf1241ffcb4824ddd2021bf17fcc477db3fe5adfe74241c75eb79c9b008",
+                "sha256:e993d2bfe95819758ae2b6c063f6c7ac90da31f2e8b7dd47bfad66fa00a01245",
+                "sha256:025c6072d3b4c07d52d1e60c05b40da6c9a4db792d85d79180cbd09ebfaa303e",
+                "sha256:cb563570fbe4081839d49c765eb4f8fc18362af13b486fc71b3a7cda0acc5728",
+                "sha256:bf4b3a63fb94d8fa6286e8682229382e01364445dd994ed325683996a68895c4",
+                "sha256:4229448e2f4b923c0e60c43050b7c811296ad3fa0d2bb5b55e376f5f6ccdf09a",
+                "sha256:0cd285289356d03b873fcdd9cf3aec37b3d205358c2574bd1e081fdcd8fb5999",
+                "sha256:444de89f8f8f064ae2dcc0834ece24142f6c7d63e4b745fac614ce5661128aca",
+                "sha256:4b1322a34e1369b20dae61c34bdb4abdc475babf60a82b09fbf4979bf0900559"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2019-12-15T18:36:00.973416372+03:00"
+        }
+    }
+]
