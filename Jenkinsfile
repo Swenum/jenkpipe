@@ -14,7 +14,7 @@ pipeline {
                             git(
                                  url: 'git@github.com:Swenum/jenkpipe',
                                  credentialsId: 'Github_Repo_Swenum',
-                                 branch: "master"
+                                 branch: "12.Homework"
                              )
                     sh 'printenv'
                     }
