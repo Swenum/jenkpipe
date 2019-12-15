@@ -17,6 +17,7 @@ pipeline {
                                  branch: "12.Homework"
                         )
                     sh 'printenv'
+                    sh 'print ${COMMIT}'
                     }
                 }
 
