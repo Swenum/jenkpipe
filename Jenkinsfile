@@ -29,6 +29,7 @@ pipeline {
                     sh """
                                         git config --global push.default simple
                                         git add --all
+                                        gut commit -m "Add Artefact"
                                         git push --set-upstream origin 12.simple
 
                       """
@@ -38,7 +39,7 @@ pipeline {
             }
         }
 
-       
+
     post {
         success {
             slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
