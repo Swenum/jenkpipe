@@ -26,13 +26,14 @@ pipeline {
                 sshagent(['Github_Repo_Swenum']) {
                     sh """
                                         git config --global push.default simple
-                                        docker image save test-nginx > docker_image_nginx.tar.gz
+                                        #docker image save test-nginx > docker_image_nginx.tar.gz
                                         git add --all
                                         git commit -m "Push artefact"
                                         #git  remote add  artefact git@github.com:Swenum/simplepythonapp.git
                                         #git push --set-upstream origin artefact
                                         #git push --set-upstream origin 12.simple
-                                        docker push test-nginx swenum/nginx:latest
+                                        docker tag  test-nginx swenum/nginx
+                                        docker push swenum/nginx
 
                       """
                 }
