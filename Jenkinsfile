@@ -13,7 +13,9 @@ pipeline {
                                  credentialsId: 'Github_Repo_Swenum',
                                  branch: "master"
                                )
-                     COMMIT = "${GIT_COMMIT.substring(0,8)}"
+                            script {
+                                       COMMIT = "${GIT_COMMIT.substring(0,8)}"
+                                    }
                     }
                 }
 
