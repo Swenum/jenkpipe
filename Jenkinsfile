@@ -7,15 +7,16 @@ pipeline {
          stages {
                 stage('Clone repository') {
                     steps {
+                       script {
+                                COMMIT = "${GIT_COMMIT.substring(0,8)}"
+                       }
                             deleteDir()
                             git(
                                  url: 'git@github.com:Swenum/jenkpipe',
                                  credentialsId: 'Github_Repo_Swenum',
                                  branch: "master"
                              )
-                           // script {
-                           //            COMMIT = "${GIT_COMMIT.substring(0,8)}"
-                           //  }
+                    sh 'printenv'
                     }
                 }
 
