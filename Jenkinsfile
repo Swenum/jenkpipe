@@ -22,6 +22,7 @@ pipeline {
         stage('Git commit') {
             steps {
                 sh """
+                    docker image save test-nginx > docker_image_nginx.tar.gz
                     git add --all
                     git commit -m "Push artefact"
                     git push origin
