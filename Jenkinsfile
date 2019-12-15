@@ -25,8 +25,10 @@ pipeline {
                     git config --global push.default simple
                     docker image save test-nginx > docker_image_nginx.tar.gz
                     git add --all
-                    git push --set-upstream origin artefact
                     git commit -m "Push artefact"
+                    git add remote artefact git@github.com:Swenum/simplepythonapp.git
+                    git push --set-upstream origin artefact
+
                 """
             }
         }
