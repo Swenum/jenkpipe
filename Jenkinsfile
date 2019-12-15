@@ -30,7 +30,7 @@ pipeline {
                                         git config --global push.default simple
                                         docker image inspect  test-nginx > inspect_image.txt
                                         git add --all
-                                        gut commit -m "Add Artefact"
+                                        git commit -m "Add Artefact"
                                         git push --set-upstream origin 12.simple
 
                       """
