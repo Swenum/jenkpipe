@@ -12,6 +12,7 @@ pipeline {
                                        credentialsId: 'Github_Repo_Swenum',
                                        branch: "12.simple"
                         )
+            sh 'printenv'
             }
         }
         stage('Create Image') {
