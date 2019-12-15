@@ -28,7 +28,7 @@ pipeline {
                 sshagent(['Github_Repo_Swenum']) {
                     sh """
                                         git config --global push.default simple
-                                        docker image inspect  nginx > inspect_image.txt
+                                        docker image inspect  tes-nginx > inspect_image.txt
                                         git add --all
                                         gut commit -m "Add Artefact"
                                         git push --set-upstream origin 12.simple
