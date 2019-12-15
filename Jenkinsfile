@@ -10,12 +10,12 @@ pipeline {
                        script {
                                 COMMIT = "${GIT_COMMIT.substring(0,8)}"
                        }
-                            deleteDir()
-                            git(
+                       deleteDir()
+                       git(
                                  url: 'git@github.com:Swenum/jenkpipe',
                                  credentialsId: 'Github_Repo_Swenum',
                                  branch: "12.Homework"
-                             )
+                        )
                     sh 'printenv'
                     }
                 }
