@@ -18,26 +18,12 @@ pipeline {
         stage('Build Image') {
             steps {
                     sh """
-                    docker build -f nginx/Dockerfile -t test-nginx nginx/
-
-                    """            }
+                    docker build -f nginx/Dockerfile -t swenum/test-nginx nginx/
+                    docker push swenum/test-nginx
+                    """
+                   }
         }
-        stage('Git commit') {
-            steps {
 
-                sshagent(['Github_Repo_Swenum']) {
-                    sh """
-                                        git config --global push.default simple
-                                        docker image inspect  test-nginx > inspect_image.txt
-                                        git add --all
-                                        git commit -m "Add Artefact"
-                                        git push --set-upstream origin 12.simple
-
-                      """
-                }
-
-            }
-        }
     }
 
     post {
